@@ -1,0 +1,243 @@
+# 오늘 한 질문과 진행한 내용 정리
+
+## 1. 오늘의 전체 흐름
+오늘은 `member` 도메인을 기준으로 Spring Boot의 기본 계층 구조를 하나씩 구현해 보았다.
+단순히 코드만 작성한 것이 아니라, 각 계층의 역할과 전체 요청 흐름까지 함께 이해하는 방향으로 진행했다.
+
+---
+
+## 2. 오늘 내가 한 질문들
+
+### member 폴더 구조 관련
+- `member` 폴더 내의 모든 내용을 정리해달라고 요청함
+- 복사하기 편한 텍스트 형태로 정리해달라고 요청함
+- 마크다운 형식으로 다시 정리해달라고 요청함
+- 마크다운이 중간에 끊겨서 다시 요청함
+
+### 엔티티 관련
+- `Member` 엔티티를 만들어달라고 요청함
+- `@GeneratedValue`가 무엇인지 설명해달라고 질문함
+- 그 설명 내용을 코드 주석으로 넣고 싶다고 요청함
+
+### Repository 관련
+- `MemberRepository`도 생성해달라고 요청함
+
+### DTO 관련
+- 다음 단계로 DTO를 만들어달라고 요청함
+- DTO의 역할이 무엇인지 질문함
+
+### 흐름 관련
+- 전체 흐름 순서를 질문함
+
+### Service 관련
+- `MemberService`를 구현해달라고 요청함
+- `@Service` 어노테이션의 역할을 질문함
+
+### Controller 관련
+- `MemberController`를 구현해달라고 요청함
+
+### Swagger 관련
+- Swagger를 사용해보고 싶다고 요청함
+- 현재 `build.gradle.kts` 내용을 보여주며 어떻게 추가하면 되는지 질문함
+- Swagger 사용법을 질문함
+
+### 마지막 요청
+- 오늘 한 질문들과 오늘 한 것들을 markdown 형식으로 정리해달라고 요청함
+
+---
+
+## 3. 오늘 실제로 구현한 것들
+
+### 1) Member 엔티티 작성
+`Member` 엔티티를 만들었다.
+
+구성한 필드:
+- `id`
+- `name`
+- `email`
+- `password`
+
+적용한 내용:
+- `@Entity`
+- `@Id`
+- `@GeneratedValue(strategy = GenerationType.IDENTITY)`
+- JPA 기본 생성자
+- 필드값을 받는 생성자
+- getter 메서드
+
+추가로:
+- `@GeneratedValue`의 의미를 이해하고,
+- 해당 설명을 코드 주석으로 넣는 형태까지 정리했다.
+
+---
+
+### 2) MemberRepository 작성
+`MemberRepository`를 생성했다.
+
+구성한 내용:
+- `JpaRepository<Member, Long>` 상속
+
+이로 인해 바로 사용할 수 있는 기본 기능:
+- `save()`
+- `findById()`
+- `findAll()`
+- `deleteById()`
+
+추가로:
+- 나중에 이메일 중복 검사용으로 `existsByEmail()` 같은 메서드를 확장할 수 있다는 점도 확인했다.
+
+---
+
+### 3) DTO 작성
+`member` 도메인에서 사용할 DTO 구조를 정리했다.
+
+작성한 DTO:
+- `MemberCreateRequest`
+- `MemberResponse`
+
+역할 정리:
+- `MemberCreateRequest`: 회원 생성 요청용 DTO
+- `MemberResponse`: 회원 조회/응답용 DTO
+
+추가로:
+- DTO의 역할이 무엇인지,
+- 엔티티와 DTO의 차이가 무엇인지도 함께 정리했다.
+
+핵심 이해:
+- Entity는 DB 저장용
+- DTO는 요청/응답 전달용
+
+---
+
+### 4) 전체 계층 흐름 이해
+Spring의 기본 요청 처리 흐름을 정리했다.
+
+정리한 흐름:
+
+클라이언트
+-> Controller
+-> Request DTO
+-> Service
+-> Repository
+-> DB
+-> Entity
+-> Service
+-> Response DTO
+-> Controller
+-> 클라이언트
+
+또한,
+- 회원 생성 흐름
+- 회원 조회 흐름
+
+도 각각 따로 이해했다.
+
+---
+
+### 5) MemberService 구현
+`MemberService`를 구현했다.
+
+구현한 기능:
+- `createMember(MemberCreateRequest request)`
+- `getMember(Long memberId)`
+
+처리한 내용:
+- 요청 DTO를 Entity로 변환
+- Repository를 통해 저장/조회
+- 결과를 Response DTO로 변환해서 반환
+
+추가로:
+- `@Service` 어노테이션의 역할도 이해했다.
+
+핵심 이해:
+- `@Service`는 서비스 계층을 나타내고,
+- 스프링이 Bean으로 등록하여 관리하게 해준다.
+
+---
+
+### 6) MemberController 구현
+`MemberController`를 구현했다.
+
+구현한 API:
+- `POST /members`
+- `GET /members/{id}`
+
+적용한 내용:
+- `@RestController`
+- `@RequestMapping("/members")`
+- `@PostMapping`
+- `@GetMapping("/{id}")`
+- `@RequestBody`
+- `@PathVariable`
+
+이로써
+- 회원 생성
+- 회원 단건 조회
+
+기능의 전체 연결이 완성되었다.
+
+---
+
+### 7) Swagger 적용 준비
+Swagger를 붙이기 위해 현재 `build.gradle.kts`를 확인했다.
+
+추가한 의존성:
+- `implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")`
+
+확인한 내용:
+- Swagger UI 접속 주소
+- OpenAPI 문서 주소
+- Swagger에서 API를 테스트하는 방법
+- `@Tag`, `@Operation` 같은 문서용 어노테이션 사용 가능 여부
+
+정리한 접속 주소:
+- `http://localhost:8080/swagger-ui/index.html`
+- `http://localhost:8080/v3/api-docs`
+
+---
+
+## 4. 오늘 이해한 핵심 개념들
+
+### 엔티티
+- DB 테이블과 연결되는 객체
+- JPA가 관리하는 저장 대상
+
+### DTO
+- 데이터를 주고받기 위한 객체
+- 요청용, 응답용으로 나뉨
+
+### Repository
+- DB 접근 담당
+- 기본 CRUD 처리
+
+### Service
+- 실제 비즈니스 로직 담당
+- Controller와 Repository를 연결
+
+### Controller
+- HTTP 요청을 받는 입구
+- 요청을 Service에 전달하고 응답 반환
+
+### Swagger
+- API 문서 확인 도구
+- 브라우저에서 직접 API 테스트 가능
+
+---
+
+## 5. 오늘 완성된 member 도메인 흐름
+
+현재까지 기준으로 `member` 도메인에서 완성된 구조는 다음과 같다.
+
+```text
+domain/member/
+  controller/
+    MemberController.java
+  service/
+    MemberService.java
+  repository/
+    MemberRepository.java
+  domain/
+    Member.java
+  dto/
+    MemberCreateRequest.java
+    MemberResponse.java
