@@ -19,22 +19,20 @@ public class MemberService {
 
     // 회원 생성
     public MemberResponse createMember(MemberCreateRequest request) {
-        if(memberRepository.existsByEmail(request.getEmail())){
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.")
+        if (memberRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
         Member member = new Member(
                 request.getName(),
                 request.getEmail(),
-                request.getPassword()
-        );
+                request.getPassword());
 
         Member savedMember = memberRepository.save(member);
 
         return new MemberResponse(
                 savedMember.getId(),
                 savedMember.getName(),
-                savedMember.getEmail()
-        );
+                savedMember.getEmail());
     }
 
     // 회원 단건 조회
@@ -45,7 +43,6 @@ public class MemberService {
         return new MemberResponse(
                 member.getId(),
                 member.getName(),
-                member.getEmail()
-        );
+                member.getEmail());
     }
 }
