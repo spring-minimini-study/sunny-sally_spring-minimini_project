@@ -6,6 +6,8 @@ import com.example.mini_spring.member.dto.MemberResponse;
 import com.example.mini_spring.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
+
 // 이걸 붙이면 스프링이 이 클래스를 Bean으로 등록하고 관리 대상으로 인식함
 // 객체를 직접 new MemberServie() 하지 않아도 되고 다른 곳에서 주입받아서 쓸 수 있음
 @Service
@@ -44,5 +46,19 @@ public class MemberService {
                 member.getId(),
                 member.getName(),
                 member.getEmail());
+    }
+
+    // 회원 목록 조회
+    public List<MemberResponse> getMembers() {
+        return memberRepository.findAll()
+                .stream()
+                .map(member -> new MemberResponse(member.getId(), member.getName(), member.getEmail()))
+                .toList();
+    }
+
+    public MemberResponse updateMember(Long memberId, MemberUpdateRequest resquest) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다. id=" + memberId));
+                
     }
 }
